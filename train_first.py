@@ -13,6 +13,7 @@ import yaml
 warnings.simplefilter("ignore")
 
 import logging
+
 # load packages
 import random
 import time
@@ -43,8 +44,12 @@ logger = get_logger(__name__, log_level="DEBUG")
 @click.option("-p", "--config_path", default="Configs/config.yml", type=str)
 def main(config_path):
     config = yaml.safe_load(open(config_path))
-
     log_dir = config["log_dir"]
+
+    # in %Y-%m-%d-%H-%M-%S format
+    start_time_str = time.strftime("%Y-%m-%d_%H-%M", time.localtime(time.time()))
+    log_dir = os.path.join(log_dir, start_time_str)
+
     if not osp.exists(log_dir):
         os.makedirs(log_dir, exist_ok=True)
     shutil.copy(config_path, osp.join(log_dir, osp.basename(config_path)))
